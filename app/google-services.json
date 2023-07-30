@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "394339156429",
+    "project_id": "clean-4u",
+    "storage_bucket": "clean-4u.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394339156429:android:d51066fddc9ef38a824484",
+        "android_client_info": {
+          "package_name": "com.example.clean4u"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394339156429-0cf7ih1ppicdb06jlj99b3ma8dj0q327.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGfs-yxjrS_SuI79MUVCH59aI3kxPjeqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394339156429-0cf7ih1ppicdb06jlj99b3ma8dj0q327.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
