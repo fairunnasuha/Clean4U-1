@@ -34,43 +34,50 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
         android:layout_marginLeft="120dp"
         android:layout_gravity="center"
         android:text="ArtClean"
         android:gravity="center"
         android:textSize="40dp"
+        android:layout_marginTop="60dp"
         android:textStyle="bold"
         android:textColor="@color/black" />
 
     <LinearLayout
+        android:id="@+id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
+        android:layout_below="@id/text1"
         android:padding="5dp" >
 
-        <EditText
+        <FrameLayout
+            android:id="@+id/mapContainer"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:drawableLeft="@drawable/location"
-            android:backgroundTint="#3A3939"
-            android:drawablePadding="16dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:hint="Select area"
-            android:textColorHint="#474343"
-            android:textSize="16dp" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp">
 
-        <EditText
+            <!-- Map Fragment -->
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="530dp" />
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/selectDate"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:drawableLeft="@drawable/calendar"
-            android:backgroundTint="#3A3939"
+            android:backgroundTint="#FF5E88BC"
             android:drawablePadding="16dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -92,6 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:layout_below="@id/linearlayout"
         android:padding="6dp">
 
         <TextView
@@ -100,6 +108,7 @@
             android:layout_marginTop="350dp"
             android:layout_marginLeft="10dp"
             android:text="Previous service"
+
             android:textColor="@color/black"/>
 
     </RelativeLayout>

@@ -18,12 +18,14 @@
         android:paddingTop="15dp">
 
         <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/profileImage"
             android:layout_width="110dp"
             android:layout_height="70dp"
             android:layout_marginTop="60dp"
             android:src="@drawable/baymaxpfp" />
 
         <TextView
+            android:id="@+id/profileName1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -57,6 +59,7 @@
             android:layout_marginLeft="6dp" />
 
         <TextView
+            android:id="@+id/profileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fairun Nasuha"
@@ -97,6 +100,7 @@
             android:layout_marginTop="60dp"/>
 
         <TextView
+            android:id="@+id/profilePhoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="011-17653250"
@@ -128,6 +132,7 @@
             android:layout_marginTop="80dp" />
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email"
@@ -138,6 +143,7 @@
             android:layout_marginTop="80dp"/>
 
         <TextView
+            android:id="@+id/profileEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="fairunnasuhann1@gmail.com"
@@ -161,6 +167,7 @@
         android:orientation="vertical" >
 
         <Button
+            android:id="@+id/editButton"
             android:layout_width="140dp"
             android:layout_height="90dp"
             android:background="@drawable/bg_btn"

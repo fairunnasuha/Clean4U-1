@@ -19,11 +19,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.play.integrity.internal.e;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.ktx.Firebase;
+
 
 import java.util.HashMap;
 
@@ -84,35 +85,40 @@ public class RegisterUser extends AppCompatActivity {
                     if (task.isSuccessful()){
                         String uid = FirebaseAuth.getInstance().getUid();
                         if (uid !=null){
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference databaseReference = mReference.child("User").child("posts").child(mAuth.getCurrentUser().getUid()).child("profile");
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("useremail", emailu);
-                            hashMap.put("full name", name);
-                            hashMap.put("age", phone);
 
-                            databaseReference.setValue(hashMap)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            //Data successfully stored
-                                            Toast.makeText(RegisterUser.this, "Data Stored", Toast.LENGTH_LONG).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            //Handle any errors
-                                        }
-                                    });
+                            // User registered successfully, now save user data to Realtime Firebase
+                            saveUserDataToFirebase(uid, name, phone, email);
+                            Toast.makeText(RegisterUser.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                            navigateToMainActivity();
                         }
-                        Toast.makeText(RegisterUser.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterUser.this, MainActivity.class));
+
                     }else{
                         Toast.makeText(RegisterUser.this, "Registration error:" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
+    }
+    private void saveUserDataToFirebase(String userId, String name, String phone, String email) {
+        DatabaseReference usersRef = mReference.child("users").child("customers").child(userId);
+        HashMap<String, Object> userData = new HashMap<>();
+        userData.put("name", name);
+        userData.put("phone", phone);
+        userData.put("email", email);
+
+        usersRef.setValue(userData)
+                .addOnSuccessListener(aVoid -> {
+                    // Data saved successfully to Firebase
+                    Toast.makeText(RegisterUser.this, "Successful to save user data: ", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(RegisterUser.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(RegisterUser.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

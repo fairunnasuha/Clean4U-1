@@ -1,49 +1,73 @@
 package com.example.clean4u;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class basic_cleaning extends AppCompatActivity {
 
-    CardView cardBC1;
-    CardView cardBC2;
-    CardView cardBC3;
-    CardView cardBC4;
-    CardView cardBC5;
-
-
+    private RecyclerView recyclerView;
+    private ServiceAdapterBasic serviceAdapter;
+    private List<Service> basicCleaningServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_cleaning);
 
-        cardBC1 = findViewById(R.id.cardBC1);
-        cardBC1.setOnClickListener(view -> {
-            startActivity(new Intent(basic_cleaning.this, bookingpage.class));
+        recyclerView = findViewById(R.id.recyclerViewBasicCleaning);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        basicCleaningServices = new ArrayList<>();
+        serviceAdapter = new ServiceAdapterBasic(this, basicCleaningServices);
+        recyclerView.setAdapter(serviceAdapter);
+
+        serviceAdapter.setOnItemClickListener(new ServiceAdapterBasic.OnItemClickListener() {
+            @Override
+            public void onItemClick(Service service) {
+                // Navigate to the BookingPage along with required data
+                Intent intent = new Intent(basic_cleaning.this, bookingpage.class);
+                intent.putExtra("companyName", service.getCompanyName());
+                intent.putExtra("companyImageUrl", service.getImageUrl());
+                intent.putExtra("companyType", service.getServiceType());
+                startActivity(intent);
+            }
         });
 
-        cardBC2 = findViewById(R.id.cardBC2);
-        cardBC2.setOnClickListener(view -> {
-            startActivity(new Intent(basic_cleaning.this, bookingpage.class));
-        });
+        loadBasicCleaningServicesFromFirebase();
+    }
 
-        cardBC3 = findViewById(R.id.cardBC3);
-        cardBC3.setOnClickListener(view -> {
-            startActivity(new Intent(basic_cleaning.this, bookingpage.class));
-        });
+    private void loadBasicCleaningServicesFromFirebase() {
+        DatabaseReference servicesReference = FirebaseDatabase.getInstance().getReference().child("services").child("Basic Cleaning");
+        servicesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                basicCleaningServices.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Assuming your Service model class has appropriate getters and setters
+                    Service service = snapshot.getValue(Service.class);
+                    if (service != null) {
+                        basicCleaningServices.add(service);
+                    }
+                }
+                serviceAdapter.notifyDataSetChanged();
+            }
 
-        cardBC4 = findViewById(R.id.cardBC4);
-        cardBC4.setOnClickListener(view -> {
-            startActivity(new Intent(basic_cleaning.this, bookingpage.class));
-        });
-
-        cardBC5 = findViewById(R.id.cardBC5);
-        cardBC5.setOnClickListener(view -> {
-            startActivity(new Intent(basic_cleaning.this, bookingpage.class));
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle database error if needed
+            }
         });
     }
 }

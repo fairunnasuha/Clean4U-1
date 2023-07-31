@@ -1,47 +1,73 @@
 package com.example.clean4u;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class disinfection extends AppCompatActivity {
 
-    CardView cardDI1;
-    CardView cardDI2;
-    CardView cardDI3;
-    CardView cardDI4;
-    CardView cardDI5;
+    private RecyclerView recyclerView;
+    private ServiceAdapterBasic serviceAdapter;
+    private List<Service> basicCleaningServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deep_cleaning);
+        setContentView(R.layout.activity_disinfection);
 
-        cardDI1 = findViewById(R.id.cardDC1);
-        cardDI1.setOnClickListener(view -> {
-            startActivity(new Intent(disinfection.this, bookingpage.class));
+        recyclerView = findViewById(R.id.recyclerViewBasicCleaning);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        basicCleaningServices = new ArrayList<>();
+        serviceAdapter = new ServiceAdapterBasic(this, basicCleaningServices);
+        recyclerView.setAdapter(serviceAdapter);
+
+        serviceAdapter.setOnItemClickListener(new ServiceAdapterBasic.OnItemClickListener() {
+            @Override
+            public void onItemClick(Service service) {
+                // Navigate to the BookingPage along with required data
+                Intent intent = new Intent(disinfection.this, bookingpage.class);
+                intent.putExtra("companyName", service.getCompanyName());
+                intent.putExtra("companyImageUrl", service.getImageUrl());
+                intent.putExtra("companyType", service.getServiceType());
+                startActivity(intent);
+            }
         });
 
-        cardDI2 = findViewById(R.id.cardDC2);
-        cardDI2.setOnClickListener(view -> {
-            startActivity(new Intent(disinfection.this, bookingpage.class));
-        });
+        loadBasicCleaningServicesFromFirebase();
+    }
 
-        cardDI3 = findViewById(R.id.cardDC3);
-        cardDI3.setOnClickListener(view -> {
-            startActivity(new Intent(disinfection.this, bookingpage.class));
-        });
+    private void loadBasicCleaningServicesFromFirebase() {
+        DatabaseReference servicesReference = FirebaseDatabase.getInstance().getReference().child("services").child("Disinfection");
+        servicesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                basicCleaningServices.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Assuming your Service model class has appropriate getters and setters
+                    Service service = snapshot.getValue(Service.class);
+                    if (service != null) {
+                        basicCleaningServices.add(service);
+                    }
+                }
+                serviceAdapter.notifyDataSetChanged();
+            }
 
-        cardDI4 = findViewById(R.id.cardDC4);
-        cardDI4.setOnClickListener(view -> {
-            startActivity(new Intent(disinfection.this, bookingpage.class));
-        });
-
-        cardDI5 = findViewById(R.id.cardDC5);
-        cardDI5.setOnClickListener(view -> {
-            startActivity(new Intent(disinfection.this, bookingpage.class));
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle database error if needed
+            }
         });
     }
 }
