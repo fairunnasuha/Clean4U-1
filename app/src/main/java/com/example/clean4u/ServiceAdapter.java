@@ -3,9 +3,11 @@ package com.example.clean4u;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,11 +25,17 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     private Context context;
     private List<Service> serviceList;
     private DatabaseReference servicesReference;
+    private OnItemClickListener itemClickListener;
 
-    public ServiceAdapter(Context context, List<Service> serviceList, DatabaseReference servicesReference) {
+    public interface OnItemClickListener {
+        void onItemClick(Service service);
+    }
+
+    public ServiceAdapter(Context context, List<Service> serviceList, DatabaseReference servicesReference, OnItemClickListener itemClickListener) {
         this.context = context;
         this.serviceList = serviceList;
         this.servicesReference = servicesReference;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -41,6 +49,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     public void onBindViewHolder(@NonNull ServiceViewHolder holder, int position) {
         Service service = serviceList.get(position);
         holder.bind(service);
+
+        // Set click listener for the item view
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClickListener.onItemClick(service);
+            }
+        });
     }
 
     @Override
@@ -52,22 +68,26 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         private TextView companyNameTextView;
         private TextView serviceTypeTextView;
         private ImageView companyImageView;
+        private TextView servicePrice;
+        private TextView serviceLocation;
 
         public ServiceViewHolder(@NonNull View itemView) {
             super(itemView);
             companyNameTextView = itemView.findViewById(R.id.companyNameTextView);
             serviceTypeTextView = itemView.findViewById(R.id.serviceTypeTextView);
             companyImageView = itemView.findViewById(R.id.companyImageView);
+            servicePrice = itemView.findViewById(R.id.servicePrice);
+            serviceLocation = itemView.findViewById(R.id.serviceLocation);
 
-            // Set a click listener for the item view
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View view) {
+                public boolean onLongClick(View view) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         Service service = serviceList.get(position);
                         showDeleteConfirmationDialog(service);
                     }
+                    return false;
                 }
             });
         }
@@ -75,6 +95,9 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         public void bind(Service service) {
             companyNameTextView.setText(service.getCompanyName());
             serviceTypeTextView.setText(service.getServiceType());
+            servicePrice.setText(" "+service.getServicePrice());
+            serviceLocation.setText("Location: "+service.getLocationlat()+","+service.getLocationlng());
+
             Glide.with(context).load(service.getImageUrl()).into(companyImageView);
         }
     }

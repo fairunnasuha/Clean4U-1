@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.clean4u.R;
@@ -17,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewServiceActivity extends AppCompatActivity {
+public class ViewServiceActivity extends AppCompatActivity implements ServiceAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private ServiceAdapter serviceAdapter;
@@ -35,12 +36,14 @@ public class ViewServiceActivity extends AppCompatActivity {
         servicesReference = FirebaseDatabase.getInstance().getReference().child("services");
 
         // Create an instance of the ServiceAdapter and pass the servicesReference
-        serviceAdapter = new ServiceAdapter(this, new ArrayList<>(), servicesReference);
+        serviceAdapter = new ServiceAdapter(this, new ArrayList<>(), servicesReference,this::onItemClick);
         recyclerView.setAdapter(serviceAdapter);
 
         // Load services from Firebase
         loadServices();
     }
+
+
 
     private void loadServices() {
         // Add a ValueEventListener to retrieve the services from Firebase
@@ -64,5 +67,17 @@ public class ViewServiceActivity extends AppCompatActivity {
                 // Handle onCancelled if needed
             }
         });
+    }
+
+    @Override
+    public void onItemClick(Service service) {
+        Intent intent = new Intent(ViewServiceActivity.this,ViewLocationCompany.class);
+        intent.putExtra("companyName", service.getCompanyName());
+        intent.putExtra("locationLat", service.getLocationlat());
+        intent.putExtra("locationLng", service.getLocationlng());
+
+        System.out.println("debug 23 "+service.getLocationlat());
+
+        startActivity(intent);
     }
 }

@@ -42,7 +42,7 @@ public class Service2 extends AppCompatActivity {
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        //Set home selected
+        //Set service selected
         bottomNavigationView.setSelectedItemId(R.id.service);
 
         //Perform ItemSelectedListener
