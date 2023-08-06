@@ -86,7 +86,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             bookings.add(booking);
                         }
                     }
-
                 }
 
                 // Update the camera position to show all markers on the map

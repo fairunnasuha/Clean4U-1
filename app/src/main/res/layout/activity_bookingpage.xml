@@ -20,7 +20,7 @@
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="20dp"
             android:textStyle="bold"/>
 
         <View
@@ -33,83 +33,59 @@
             android:paddingLeft="20dp"/>
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="120dp"
-        android:layout_gravity="center"
-        android:text="ArtClean"
-        android:gravity="center"
-        android:textSize="40dp"
-        android:layout_marginTop="60dp"
-        android:textStyle="bold"
-        android:textColor="@color/black" />
-
     <LinearLayout
         android:id="@+id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:orientation="vertical"
-        android:layout_below="@id/text1"
         android:padding="5dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Please choose your location."
+            android:textSize="20sp"
+            android:layout_marginTop="15dp" />
 
         <FrameLayout
             android:id="@+id/mapContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="15dp">
 
             <!-- Map Fragment -->
             <fragment
                 android:id="@+id/mapFragment"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="530dp" />
-
+                android:layout_height="400dp" />
         </FrameLayout>
 
         <Button
             android:id="@+id/selectDate"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:drawableLeft="@drawable/calendar"
             android:backgroundTint="#FF5E88BC"
             android:drawablePadding="16dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:hint="Select Date"
-            android:textColorHint="#474343"
+            android:textColor="@color/black"
             android:textSize="16dp" />
 
         <Button
             android:id="@+id/bookingbtn"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:text="Book service"
             android:backgroundTint="#FF5E88BC"
+            android:drawablePadding="16dp"
+            android:paddingRight="10dp"
             android:textAllCaps="false"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="16dp" />
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_below="@id/linearlayout"
-        android:padding="6dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="350dp"
-            android:layout_marginLeft="10dp"
-            android:text="Previous service"
-
-            android:textColor="@color/black"/>
-
-    </RelativeLayout>
 </RelativeLayout>

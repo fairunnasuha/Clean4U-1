@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Fairun"
+            android:text="Admin"
             android:textColor="@color/black"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -62,7 +62,7 @@
             android:id="@+id/profileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fairun Nasuha"
+            android:text="Fairun Nasuha "
             android:layout_marginLeft="98dp"
             android:textSize="18dp"
             android:textColor="@color/black"/>
@@ -103,7 +103,7 @@
             android:id="@+id/profilePhoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="011-17653250"
+            android:text=" "
             android:layout_marginLeft="30dp"
             android:textSize="18dp"
             android:textColor="@color/black"
@@ -146,8 +146,8 @@
             android:id="@+id/profileEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="fairunnasuhann1@gmail.com"
-            android:layout_marginLeft="65dp"
+            android:text=" "
+            android:layout_marginLeft="98dp"
             android:textSize="18dp"
             android:textColor="@color/black"
             android:layout_marginTop="80dp"/>
@@ -166,24 +166,12 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/editButton"
-            android:layout_width="140dp"
-            android:layout_height="90dp"
-            android:background="@drawable/bg_btn"
-            android:text="Edit Profile"
-            android:padding="20dp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="14dp"
-            android:drawableLeft="@drawable/baseline_edit"
-            android:layout_marginTop="400dp"/>
 
         <Button
             android:id="@+id/signout"
             android:layout_width="130dp"
             android:layout_height="40dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="320dp"
             android:background="@drawable/bg_btn"
             android:text="Logout"
             android:textColor="@color/black"

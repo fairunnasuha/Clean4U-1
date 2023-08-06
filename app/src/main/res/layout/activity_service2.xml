@@ -27,7 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Booked Service"
-                android:textSize="16dp"
+                android:textSize="22dp"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="@color/black" />
@@ -49,7 +49,6 @@
             android:paddingLeft="8dp"/>
 
     </RelativeLayout>
-
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -3,9 +3,13 @@ package com.example.clean4u;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,8 +22,17 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,7 +42,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class AddServiceActivity extends AppCompatActivity {
+public class AddServiceActivity extends AppCompatActivity implements OnMapReadyCallback ,GoogleMap.OnMapClickListener {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -38,12 +51,25 @@ public class AddServiceActivity extends AppCompatActivity {
     private Button addImageButton;
     private Button addServiceButton;
     private ImageView companyImageView;
+    private Button adminLocation;
+    private EditText adminPrice;
 
     private Uri imageUri;
     private ProgressDialog progressDialog;
     private DatabaseReference servicesReference;
     private StorageReference storageReference;
     private Button viewServicesButton;
+
+    private FirebaseAuth mAuth;
+    private Button logoutadmin;
+
+    private GoogleMap mMap;
+    private FusedLocationProviderClient fusedLocationClient;
+    private Marker userLocationMarker;
+    private LatLng userLatLng; // Store user's latitude and longitude in a global variable
+    private Marker clickedMarker;
+
+    private double longitude,latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +82,7 @@ public class AddServiceActivity extends AppCompatActivity {
         addServiceButton = findViewById(R.id.addServiceButton);
         companyImageView = findViewById(R.id.companyImageView);
         viewServicesButton = findViewById(R.id.viewServicesButton);
+        adminPrice = findViewById(R.id.adminprice);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading image...");
@@ -85,6 +112,28 @@ public class AddServiceActivity extends AppCompatActivity {
             Intent intent = new Intent(AddServiceActivity.this, ViewServiceActivity.class);
             startActivity(intent);
         });
+
+        mAuth = FirebaseAuth.getInstance();
+        logoutadmin = findViewById(R.id.logoutadmin);
+
+        logoutadmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Intent intent = new Intent(AddServiceActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                Toast.makeText(AddServiceActivity.this, "Logout Successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Initialize FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragmentadmin);
+        mapFragment.getMapAsync(this);
     }
 
     private void pickImageFromGallery() {
@@ -106,6 +155,88 @@ public class AddServiceActivity extends AppCompatActivity {
         }
     }
 
+    private void showUserCurrentLocation() {
+        if (mMap == null) {
+            return;
+        }
+
+        // Check for location permission, and request if necessary
+        // ... (add code to handle location permission if needed)
+
+        // Get the user's last known location
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        // Add a marker at the user's current location and move the camera
+                        userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        userLocationMarker = mMap.addMarker(new MarkerOptions()
+                                .position(userLatLng)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                .title("Your Location"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15f));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                    Toast.makeText(this, "Error getting location: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker at the user's current location and move the camera
+        showUserCurrentLocation();
+
+        // Set onMapClickListener to listen for map click events
+        googleMap.setOnMapClickListener(this);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        // Create and show the confirmation dialog
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Selection")
+                .setMessage("Do you want to select this location?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User confirmed, add the marker and get latitude and longitude
+                        handleMarkerSelection(latLng);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User declined, do nothing
+                    }
+                })
+                .show();
+    }
+
+    private void handleMarkerSelection(LatLng latLng) {
+        // Remove the previously clicked marker (if any)
+        if (clickedMarker != null) {
+            clickedMarker.remove();
+        }
+
+        // Add a new marker at the clicked location with a blue color
+        clickedMarker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("Selected Location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+        // Get the latitude and longitude of the clicked location
+         latitude = latLng.latitude;
+         longitude = latLng.longitude;
+
+        // You can use latitude and longitude as needed
+        Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+    }
 
     private void addService() {
         String companyName = companyNameEditText.getText().toString().trim();
@@ -137,7 +268,9 @@ public class AddServiceActivity extends AppCompatActivity {
                     serviceData.put("serviceType", serviceType);
                     serviceData.put("imageUrl", imageUrl);
                     serviceData.put("serviceId", serviceId); // Set the serviceId in the data
-
+                    serviceData.put("locationlng", Double.toString(latitude)); //set the location of branch in the data
+                    serviceData.put("locationlat", Double.toString(longitude));
+                    serviceData.put("servicePrice", adminPrice.getText().toString().trim());
                     servicesReference.child(serviceType).child(serviceId).setValue(serviceData)
                             .addOnSuccessListener(aVoid -> {
                                 progressDialog.dismiss();
@@ -156,6 +289,5 @@ public class AddServiceActivity extends AppCompatActivity {
             });
         }
     }
-
 
 }

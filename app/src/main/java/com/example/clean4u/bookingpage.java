@@ -58,6 +58,9 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
     private DatabaseReference bookingServiceRef;
     private String name,email,phoneNumber,imageUrlCust,fullName,firstName;
 
+    private static final int MIN_HOUR = 8; //8AM
+    private static final int MAX_HOUR = 17; //5PM
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,13 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
 
         bookingbtn = findViewById(R.id.bookingbtn);
         selectDate = findViewById(R.id.selectDate);
+
+        selectDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimePickerDialog();
+            }
+        });
 
         // Initialize Firebase
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -149,8 +159,6 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
 
                         // The first element in the array will be the first name
                          firstName = nameParts[0];
-
-
                     }
                 }
 
@@ -161,6 +169,7 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
             });
         }
     }
+
     private void showDateTimePickerDialog() {
         // Get the current date and time
         final Calendar calendar = Calendar.getInstance();
@@ -186,6 +195,7 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
                 }, year, month, day);
         datePickerDialog.show();
     }
+
     private void storeBookingData() {
         // Create a unique key for the booking entry
         String bookingKey = bookingServiceRef.push().getKey();
@@ -232,8 +242,13 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                         // Set the selected time
-                        selectedHour = hour;
-                        selectedMinute = minute;
+
+                        if ( hour >= MIN_HOUR && hour <= MAX_HOUR){
+                            selectedHour = hour;
+                            selectedMinute = minute;
+                        } else {
+                            Toast.makeText(bookingpage.this, "Select time between 8 AM and 5 PM", Toast.LENGTH_SHORT).show();
+                        }
 
                         // Show the selected date and time in a Toast (you can use it as needed)
                         Toast.makeText(bookingpage.this, "Selected Date: " + selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay +
@@ -336,4 +351,5 @@ public class bookingpage extends AppCompatActivity implements OnMapReadyCallback
         // You can use latitude and longitude as needed
         Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
     }
+
 }

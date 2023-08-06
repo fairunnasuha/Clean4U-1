@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#DCEBFE"
     android:padding="16dp">
+
 
     <EditText
         android:id="@+id/companyNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Company Name" />
+
+    <EditText
+        android:id="@+id/adminprice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Service Charges" />
 
     <Spinner
         android:id="@+id/serviceTypeSpinner"
@@ -19,13 +31,12 @@
 
     <ImageView
         android:id="@+id/companyImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:visibility="gone"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
         android:layout_marginTop="16dp" />
-
 
     <Button
         android:id="@+id/addImageButton"
@@ -38,13 +49,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Service" />
+
     <Button
         android:id="@+id/viewServicesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Services"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="1dp" />
     <Button
         android:id="@+id/viewBookingsButton"
         android:layout_width="wrap_content"
@@ -52,5 +64,32 @@
         android:text="View Booked Service Location"
         android:layout_below="@id/addServiceButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="2dp" />
+
+    <Button
+        android:id="@+id/logoutadmin"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="3dp"
+        android:text="Logout"
+        android:textColor="@color/white"
+        android:backgroundTint="#FF5E88BC"
+        android:layout_alignParentRight="true"
+        android:textStyle="normal"
+        android:textSize="15dp" />
+
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Map Fragment -->
+        <fragment
+            android:id="@+id/mapFragmentadmin"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+    </FrameLayout>
+
 </LinearLayout>
+</ScrollView>
